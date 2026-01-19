@@ -44,9 +44,9 @@
     }
 
     .wrap{
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 26px 16px 48px;
+      max-width: 920px;   /* 980 → 920（カードの max と同じ） */
+  margin: 0 auto;
+  padding: 26px 16px 48px;
     }
 
     .topbar{
@@ -80,9 +80,15 @@
       box-shadow: var(--shadow);
       overflow:hidden;
 
-      aspect-ratio: 655 / 342;
-      width: min(920px, 100%);
-      margin: 0 auto;
+      width: 100%;             /* min(920px, 100%) → 100% にしてwrap幅と一致 */
+  margin: 0;               /* 0 auto → 0 */
+  aspect-ratio: auto;
+
+  /* absolute要素だけだと高さが0になり得るので最低高さを与える */
+  min-height: 320px;
+
+  /* 画面が狭い時は少し縮むように（好みで数値は調整） */
+  height: clamp(280px, 42vw, 500px);
 
       background:
         radial-gradient(700px 520px at 78% 65%, rgba(0,0,0,0.35), transparent 55%),
