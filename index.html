@@ -3,23 +3,35 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Open in Obsidian</title>
+  <title>Open in Obsidian (via Shortcuts)</title>
 </head>
 <body>
   <p>自動で開かない場合は、下のリンクをタップ…</p>
-  <p><a id="openLink" href="#">Obsidianで開く</a></p>
+  <p><a id="openLink" href="#">ショートカット経由で開く</a></p>
 
   <script>
     (function () {
+      // 例: ?u=obsidian%3A%2F%2Fopen%3Fvault%3D...%26file%3D...
       var u = new URLSearchParams(location.search).get("u");
       if (!u) return;
 
+      // u は URLエンコード済みで渡している前提
       var obsidianUrl = decodeURIComponent(u);
 
-      var a = document.getElementById("openLink");
-      a.href = obsidianUrl;
+      // 実行したいショートカット名（ショートカットアプリ内の表示名と完全一致）
+      var shortcutName = "OpenObsidian";
 
-      setTimeout(function () { location.href = obsidianUrl; }, 200);
+      // Apple公式: shortcuts://run-shortcut?name=[name]&input=[input]&text=[text]
+      // input=text のとき text がショートカット入力になる :contentReference[oaicite:2]{index=2}
+      var shortcutsUrl =
+        "shortcuts://run-shortcut?name=" + encodeURIComponent(shortcutName) +
+        "&input=text&text=" + encodeURIComponent(obsidianUrl);
+
+      var a = document.getElementById("openLink");
+      a.href = shortcutsUrl;
+
+      // 自動試行（失敗してもボタンは残る）
+      setTimeout(function () { location.href = shortcutsUrl; }, 200);
     })();
   </script>
 </body>
