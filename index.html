@@ -18,7 +18,6 @@
       --shadow: 0 10px 30px rgba(0,0,0,0.45);
       --accent: #a78bfa;      /* purple */
       --accent-2: #7c3aed;    /* deeper purple */
-      --danger: #fb7185;
       --radius: 16px;
     }
 
@@ -85,6 +84,10 @@
     .brand .sub{
       font-size: 12px;
       color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80vw;
     }
 
     .card{
@@ -146,9 +149,7 @@
       background:
         linear-gradient(135deg, rgba(167,139,250,0.24), rgba(124,58,237,0.14));
     }
-    .btn:active{
-      transform: translateY(0px);
-    }
+    .btn:active{ transform: translateY(0px); }
     .btn:focus-visible{
       outline: 3px solid rgba(167,139,250,0.35);
       outline-offset: 2px;
@@ -205,11 +206,6 @@
       100% { box-shadow: 0 0 0 14px rgba(167,139,250,0.0); }
     }
 
-    .hidden{
-      display:none !important;
-    }
-
-    /* Small screens */
     @media (max-width: 520px){
       .btn{ min-width: 100%; }
       .wrap{ padding-top: 22px; }
@@ -222,19 +218,17 @@
       <div class="mark"></div>
       <div class="brand">
         <div class="title">Obsidian Bridge</div>
-        <div class="sub">obsidian:// へ遷移</div>
+        <div class="sub" id="subLine">obsidian:// へ遷移</div>
       </div>
     </div>
 
     <div class="card">
       <div class="hero">
-        <!-- 文言は維持 -->
-        <h1>自動で開かない場合は、下のリンクをタップ…</h1>
-        <p>環境によっては自動遷移が制限されるため、手動リンクを併設しています…</p>
+        <h1>自動で開かない場合は、下のリンクをタップ</h1>
+        <p>環境によっては自動遷移が制限されるため、手動リンクを併設しています</p>
       </div>
 
       <div class="actions">
-        <!-- 文言は維持（リンクテキスト） -->
         <a id="openLink" class="btn" href="#">
           <span class="dot" aria-hidden="true"></span>
           Obsidianで開く
@@ -246,9 +240,6 @@
           <span class="status"><span class="pulse" aria-hidden="true"></span>status</span>
           <span id="statusText">waiting…</span>
         </span>
-        <span class="chip">
-          param: <code style="color:var(--text);">?u=</code>
-        </span>
       </div>
     </div>
   </div>
@@ -256,14 +247,40 @@
   <script>
     (function () {
       var statusText = document.getElementById("statusText");
+      var subLine = document.getElementById("subLine");
       var u = new URLSearchParams(location.search).get("u");
+
+      function extractTitleFromObsidianUrl(obsidianUrl) {
+        // 1) URLとして解釈して file/path を取る
+        // 2) フォルダがあれば末尾だけ
+        // 3) .md があれば削る
+        try {
+          var urlObj = new URL(obsidianUrl);
+          var file = urlObj.searchParams.get("file") || urlObj.searchParams.get("path");
+          if (!file) return null;
+
+          // 既に decode 済みで来る想定だが、念のため %2F などが残っていた場合を救う
+          try { file = decodeURIComponent(file); } catch (e) {}
+
+          // フォルダを含む場合は最後だけ
+          var parts = file.split("/");
+          var last = parts[parts.length - 1];
+
+          // .md 拡張子を落とす（付いている場合のみ）
+          if (last.slice(-3).toLowerCase() === ".md") {
+            last = last.slice(0, -3);
+          }
+          return last || null;
+        } catch (e) {
+          return null;
+        }
+      }
 
       if (!u) {
         statusText.textContent = "missing u";
         return;
       }
 
-      // u は URLエンコード済み文字列として渡す（decode後に obsidian://… になる）
       var obsidianUrl;
       try {
         obsidianUrl = decodeURIComponent(u);
@@ -272,12 +289,17 @@
         return;
       }
 
+      // タイトル表示（obsidian:// の部分をタイトルに置換）
+      var title = extractTitleFromObsidianUrl(obsidianUrl) || "Untitled";
+      subLine.textContent = title + " へ遷移";
+      document.title = title + " | Open in Obsidian";
+
       var a = document.getElementById("openLink");
       a.href = obsidianUrl;
 
       statusText.textContent = "redirecting…";
 
-      // iOSやX内ブラウザでは自動遷移が弾かれることがあるので、試すだけ試す
+      // 自動遷移は弾かれることがあるので、試すだけ試す
       setTimeout(function () {
         try {
           location.href = obsidianUrl;
