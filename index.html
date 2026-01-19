@@ -5,413 +5,287 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="dark" />
   <title>Open in Obsidian</title>
+
   <style>
     :root{
-      --bg0:#0b0d12;
-      --bg1:#0f1320;
-      --card: rgba(20,24,36,.72);
-      --card2: rgba(16,20,32,.55);
-      --stroke: rgba(255,255,255,.10);
-      --stroke2: rgba(255,255,255,.06);
-      --text:#e8eaf2;
-      --muted:#a9b0c5;
-      --muted2:#7f88a3;
-      --accent:#7c5cff;     /* Obsidianっぽい紫 */
-      --accent2:#23d5ab;    /* GitHub系の緑をほんの少し */
-      --warn:#ffcc66;
-      --danger:#ff5c7a;
-      --shadow: 0 18px 60px rgba(0,0,0,.55);
-      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "YuGothic", "Meiryo", sans-serif;
+      /* Obsidian-ish dark palette */
+      --bg: #0f1117;
+      --panel: #151a23;
+      --panel-2: #111622;
+      --text: #e6e8ee;
+      --muted: #a6adbb;
+      --border: rgba(255,255,255,0.08);
+      --shadow: 0 10px 30px rgba(0,0,0,0.45);
+      --accent: #a78bfa;      /* purple */
+      --accent-2: #7c3aed;    /* deeper purple */
+      --danger: #fb7185;
+      --radius: 16px;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
+
+    *{ box-sizing: border-box; }
+
     body{
       margin:0;
-      font-family:var(--sans);
-      color:var(--text);
+      min-height:100vh;
+      color: var(--text);
       background:
-        radial-gradient(1200px 800px at 20% 10%, rgba(124,92,255,.22), transparent 60%),
-        radial-gradient(900px 700px at 85% 30%, rgba(35,213,171,.10), transparent 55%),
-        radial-gradient(700px 600px at 50% 95%, rgba(124,92,255,.10), transparent 55%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
+        radial-gradient(1200px 700px at 20% 15%, rgba(167,139,250,0.12), transparent 55%),
+        radial-gradient(900px 600px at 80% 30%, rgba(124,58,237,0.10), transparent 60%),
+        radial-gradient(900px 700px at 50% 100%, rgba(255,255,255,0.03), transparent 55%),
+        var(--bg);
+      font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "SF Pro Text",
+                   "Segoe UI", "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Sans",
+                   "Yu Gothic", "Meiryo", sans-serif;
+      line-height: 1.55;
+    }
+
+    .wrap{
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 36px 18px 48px;
+    }
+
+    .topbar{
       display:flex;
       align-items:center;
-      justify-content:center;
-      padding:24px;
+      gap:12px;
+      margin-bottom: 18px;
+      opacity: 0.95;
     }
-    .wrap{width:min(920px, 100%)}
-    .top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:16px;
-      margin-bottom:14px;
-    }
-    .brand{
-      display:flex; align-items:center; gap:12px;
-      padding:10px 12px;
-      border:1px solid var(--stroke2);
-      border-radius:14px;
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-      backdrop-filter: blur(10px);
-    }
-    .logo{
-      width:34px;height:34px;border-radius:10px;
+
+    .mark{
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
       background:
-        radial-gradient(12px 12px at 30% 30%, rgba(255,255,255,.35), transparent 60%),
-        linear-gradient(135deg, rgba(124,92,255,1), rgba(124,92,255,.15));
-      box-shadow: 0 10px 30px rgba(124,92,255,.25);
-      position:relative;
-      overflow:hidden;
+        linear-gradient(135deg, rgba(167,139,250,0.95), rgba(124,58,237,0.95));
+      box-shadow: 0 8px 18px rgba(124,58,237,0.18);
+      position: relative;
+      overflow: hidden;
     }
-    .logo:after{
+    .mark:after{
       content:"";
-      position:absolute; inset:-30%;
-      background: conic-gradient(from 210deg, rgba(255,255,255,.0), rgba(255,255,255,.20), rgba(255,255,255,.0));
-      animation: sheen 5.5s linear infinite;
-      opacity:.55;
+      position:absolute;
+      inset:-40% -20%;
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.55), transparent 45%);
+      transform: rotate(18deg);
+      opacity: 0.65;
     }
-    @keyframes sheen{to{transform:rotate(360deg)}}
-    .brand h1{
-      font-size:14px; margin:0; letter-spacing:.2px;
+
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .brand .title{
+      font-weight: 750;
+      letter-spacing: 0.2px;
+      font-size: 14px;
     }
     .brand .sub{
-      font-size:12px; color:var(--muted2); margin-top:2px;
+      font-size: 12px;
+      color: var(--muted);
     }
 
     .card{
-      border:1px solid var(--stroke);
-      border-radius:18px;
-      background: linear-gradient(180deg, var(--card), rgba(12,14,22,.55));
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 25%), var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
-      overflow:hidden;
-      backdrop-filter: blur(12px);
-    }
-    .header{
-      padding:18px 18px 12px 18px;
-      border-bottom:1px solid var(--stroke2);
-      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0));
-    }
-    .title{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-    }
-    .title h2{margin:0;font-size:16px}
-    .pill{
-      font-family:var(--mono);
-      font-size:12px;
-      color:var(--muted);
-      padding:6px 10px;
-      border:1px solid var(--stroke2);
-      border-radius:999px;
-      background: rgba(0,0,0,.18);
-      white-space:nowrap;
+      padding: 20px 18px;
     }
 
-    .content{padding:16px 18px 18px 18px}
-    .grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:12px;
+    .hero{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      margin-bottom: 14px;
     }
-    @media (min-width: 780px){
-      .grid{grid-template-columns: 1.2fr .8fr}
+
+    .hero h1{
+      margin:0;
+      font-size: 18px;
+      letter-spacing: 0.2px;
     }
-    .panel{
-      border:1px solid var(--stroke2);
-      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
-      border-radius:14px;
-      padding:14px;
-    }
-    .k{
-      font-size:12px;
-      color:var(--muted2);
-      margin-bottom:6px;
-      letter-spacing:.2px;
-    }
-    .v{
-      font-size:14px;
-      line-height:1.35;
-      word-break:break-word;
-    }
-    .mono{
-      font-family:var(--mono);
-      font-size:12px;
-      color:var(--muted);
-      background: rgba(0,0,0,.22);
-      border:1px solid var(--stroke2);
-      border-radius:12px;
-      padding:10px 10px;
-      overflow:auto;
+
+    .hero p{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
     }
 
     .actions{
       display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin-top:14px;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 14px;
     }
+
     .btn{
-      appearance:none;
-      border:1px solid var(--stroke2);
-      background: rgba(0,0,0,.18);
-      color:var(--text);
-      border-radius:12px;
-      padding:10px 12px;
-      font-size:14px;
-      cursor:pointer;
       display:inline-flex;
       align-items:center;
+      justify-content:center;
       gap:10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(167,139,250,0.35);
+      background:
+        linear-gradient(135deg, rgba(167,139,250,0.18), rgba(124,58,237,0.10));
+      color: var(--text);
       text-decoration:none;
-      transition: transform .06s ease, border-color .12s ease, background .12s ease;
+      font-weight: 700;
+      font-size: 14px;
+      min-width: 220px;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
       user-select:none;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn:hover{
-      border-color: rgba(124,92,255,.40);
-      background: rgba(124,92,255,.10);
+      transform: translateY(-1px);
+      border-color: rgba(167,139,250,0.55);
+      background:
+        linear-gradient(135deg, rgba(167,139,250,0.24), rgba(124,58,237,0.14));
     }
-    .btn:active{transform:translateY(1px)}
-    .btn.primary{
-      border-color: rgba(124,92,255,.55);
-      background: linear-gradient(180deg, rgba(124,92,255,.28), rgba(124,92,255,.12));
-      box-shadow: 0 16px 36px rgba(124,92,255,.18);
+    .btn:active{
+      transform: translateY(0px);
     }
-    .btn.ghost:hover{
-      border-color: rgba(35,213,171,.35);
-      background: rgba(35,213,171,.08);
+    .btn:focus-visible{
+      outline: 3px solid rgba(167,139,250,0.35);
+      outline-offset: 2px;
     }
-    .btn svg{width:18px;height:18px;opacity:.95}
-    .note{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.45;
+
+    .btn .dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(167,139,250,0.12);
     }
-    .warn{
-      color: var(--warn);
+
+    .meta{
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 12px;
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
     }
-    .error{
-      color: var(--danger);
+
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      border: 1px solid var(--border);
+      background: var(--panel-2);
+      border-radius: 999px;
+      padding: 6px 10px;
     }
-    .footer{
-      padding:12px 18px;
-      border-top:1px solid var(--stroke2);
-      color:var(--muted2);
-      font-size:12px;
-      background: rgba(0,0,0,.10);
+
+    .status{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+    }
+
+    .pulse{
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(167,139,250,0.35);
+      animation: pulse 1.6s infinite;
+    }
+
+    @keyframes pulse{
+      0% { box-shadow: 0 0 0 0 rgba(167,139,250,0.0); }
+      30% { box-shadow: 0 0 0 6px rgba(167,139,250,0.18); }
+      100% { box-shadow: 0 0 0 14px rgba(167,139,250,0.0); }
+    }
+
+    .hidden{
+      display:none !important;
+    }
+
+    /* Small screens */
+    @media (max-width: 520px){
+      .btn{ min-width: 100%; }
+      .wrap{ padding-top: 22px; }
     }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="top">
+    <div class="topbar" aria-hidden="true">
+      <div class="mark"></div>
       <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1>Obsidian Bridge</h1>
-          <div class="sub">https → obsidian:// への中継ページ</div>
-        </div>
+        <div class="title">Obsidian Bridge</div>
+        <div class="sub">obsidian:// へ遷移</div>
       </div>
-      <div class="pill" id="statusPill">status: idle</div>
     </div>
 
-    <div class="card" role="main">
-      <div class="header">
-        <div class="title">
-          <h2 id="noteTitle">ノート情報を解析中…</h2>
-          <div class="pill" id="vaultPill">vault: -</div>
-        </div>
+    <div class="card">
+      <div class="hero">
+        <!-- 文言は維持 -->
+        <h1>自動で開かない場合は、下のリンクをタップ…</h1>
+        <p>環境によっては自動遷移が制限されるため、手動リンクを併設しています…</p>
       </div>
 
-      <div class="content">
-        <div class="grid">
-          <div class="panel">
-            <div class="k">Obsidian URI（デコード後）</div>
-            <div class="mono" id="decodedBox">-</div>
-
-            <div class="actions">
-              <a class="btn primary" id="openBtn" href="#">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M12 2l7 5v10l-7 5-7-5V7l7-5Z" stroke="currentColor" stroke-width="1.6"/>
-                  <path d="M12 7v10M7.5 10.2l4.5-3 4.5 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Obsidianで開く
-              </a>
-
-              <button class="btn ghost" id="copyBtn" type="button">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M9 9h10v12H9V9Z" stroke="currentColor" stroke-width="1.6"/>
-                  <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1" stroke="currentColor" stroke-width="1.6"/>
-                </svg>
-                URIをコピー
-              </button>
-
-              <a class="btn" id="backBtn" href="#">
-                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M10 7l-5 5 5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M5 12h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                </svg>
-                戻る
-              </a>
-            </div>
-
-            <div class="note">
-              自動遷移は、iOSやアプリ内ブラウザの制限で失敗する場合があります…。その場合は「Obsidianで開く」をタップしてください…。<br/>
-              このページは <span class="warn">URLの u= に含まれる情報（vault名・パス）を表示</span>します…。公開範囲に注意してください…。
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="k">抽出結果</div>
-            <div class="v" id="summaryBox">
-              <div>Vault: <span class="mono" id="vaultText">-</span></div>
-              <div style="margin-top:8px">Note: <span class="mono" id="fileText">-</span></div>
-            </div>
-
-            <div style="height:12px"></div>
-
-            <div class="k">中継URL（再共有用）</div>
-            <div class="mono" id="bridgeBox">-</div>
-          </div>
-        </div>
-
-        <div class="note error" id="errorBox" style="display:none"></div>
+      <div class="actions">
+        <!-- 文言は維持（リンクテキスト） -->
+        <a id="openLink" class="btn" href="#">
+          <span class="dot" aria-hidden="true"></span>
+          Obsidianで開く
+        </a>
       </div>
 
-      <div class="footer">
-        tip: Xから開く場合、まずこのページ（https）が開き、その後 obsidian:// を起動します…。
+      <div class="meta">
+        <span class="chip">
+          <span class="status"><span class="pulse" aria-hidden="true"></span>status</span>
+          <span id="statusText">waiting…</span>
+        </span>
+        <span class="chip">
+          param: <code style="color:var(--text);">?u=</code>
+        </span>
       </div>
     </div>
   </div>
 
   <script>
     (function () {
-      var statusPill = document.getElementById("statusPill");
-      var vaultPill  = document.getElementById("vaultPill");
-      var noteTitle  = document.getElementById("noteTitle");
-
-      var decodedBox = document.getElementById("decodedBox");
-      var bridgeBox  = document.getElementById("bridgeBox");
-      var summaryVault = document.getElementById("vaultText");
-      var summaryFile  = document.getElementById("fileText");
-
-      var openBtn = document.getElementById("openBtn");
-      var copyBtn = document.getElementById("copyBtn");
-      var backBtn = document.getElementById("backBtn");
-
-      var errorBox = document.getElementById("errorBox");
-
-      function setStatus(text){
-        statusPill.textContent = "status: " + text;
-      }
-      function showError(text){
-        errorBox.style.display = "block";
-        errorBox.textContent = text;
-        setStatus("error");
-      }
-
-      // 1) u パラメータを取得
+      var statusText = document.getElementById("statusText");
       var u = new URLSearchParams(location.search).get("u");
+
       if (!u) {
-        noteTitle.textContent = "u= がありません…";
-        showError("URLに ?u=（obsidian URIをURLエンコードしたもの）が必要です…。");
-        backBtn.href = "javascript:history.back()";
+        statusText.textContent = "missing u";
         return;
       }
 
-      // 2) obsidian:// を復元
+      // u は URLエンコード済み文字列として渡す（decode後に obsidian://… になる）
       var obsidianUrl;
       try {
         obsidianUrl = decodeURIComponent(u);
       } catch (e) {
-        noteTitle.textContent = "デコードに失敗…";
-        showError("u= のURLデコードに失敗しました…。ショートカット側のエンコードを確認してください…。");
-        backBtn.href = "javascript:history.back()";
+        statusText.textContent = "decode error";
         return;
       }
 
-      decodedBox.textContent = obsidianUrl;
-      openBtn.href = obsidianUrl;
-      backBtn.href = "javascript:history.back()";
-      setStatus("ready");
+      var a = document.getElementById("openLink");
+      a.href = obsidianUrl;
 
-      // 3) vault / file を抽出（表示用）
-      var vault = "-";
-      var file  = "-";
-      try {
-        // obsidian://open?... の ?以降を読む
-        var qpos = obsidianUrl.indexOf("?");
-        if (qpos >= 0) {
-          var qs = obsidianUrl.slice(qpos + 1);
-          // file= には %E... や %20 が入る前提なので、ここはURLSearchParamsで読む
-          var params = new URLSearchParams(qs);
-          if (params.has("vault")) vault = params.get("vault") || "-";
-          if (params.has("file"))  file  = params.get("file")  || "-";
+      statusText.textContent = "redirecting…";
 
-          // file がパスなら最後だけ
-          if (file && file !== "-") {
-            // URLSearchParamsはデコード済みを返すことが多いが、保険で再デコードはしない（壊れやすい）
-            var parts = file.split("/");
-            file = parts[parts.length - 1] || file;
-            if (file.toLowerCase().endsWith(".md")) {
-              file = file.slice(0, -3);
-            }
-          }
+      // iOSやX内ブラウザでは自動遷移が弾かれることがあるので、試すだけ試す
+      setTimeout(function () {
+        try {
+          location.href = obsidianUrl;
+          statusText.textContent = "attempted";
+        } catch (e) {
+          statusText.textContent = "blocked";
         }
-      } catch (e2) {
-        // 表示の失敗は致命ではない
-      }
-
-      vaultPill.textContent = "vault: " + vault;
-      summaryVault.textContent = vault;
-      summaryFile.textContent  = file;
-
-      if (file && file !== "-") {
-        noteTitle.textContent = file;
-      } else {
-        noteTitle.textContent = "Obsidianリンクを受信…";
-      }
-
-      // 4) “再共有用” 中継URL（このページ自身 + u=）
-      try{
-        var base = location.origin + location.pathname;
-        var bridged = base + "?u=" + encodeURIComponent(obsidianUrl);
-        bridgeBox.textContent = bridged;
-      } catch(e3){
-        bridgeBox.textContent = "(生成失敗)";
-      }
-
-      // 5) コピー
-      copyBtn.addEventListener("click", function(){
-        var txt = obsidianUrl;
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(txt).then(function(){
-            setStatus("copied");
-          }, function(){
-            setStatus("copy failed");
-          });
-        } else {
-          // 旧式フォールバック
-          try{
-            var ta = document.createElement("textarea");
-            ta.value = txt;
-            ta.style.position = "fixed";
-            ta.style.opacity = "0";
-            document.body.appendChild(ta);
-            ta.focus();
-            ta.select();
-            document.execCommand("copy");
-            document.body.removeChild(ta);
-            setStatus("copied");
-          } catch(e4){
-            setStatus("copy failed");
-          }
-        }
-      });
-
-      // 6) 自動遷移を試す（失敗してもボタンが残る）
-      setTimeout(function(){ location.href = obsidianUrl; }, 220);
+      }, 200);
     })();
   </script>
 </body>
