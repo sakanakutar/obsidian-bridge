@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Open in Obsidian</title>
+</head>
+<body>
+  <p>自動で開かない場合は、下のリンクをタップ…</p>
+  <p><a id="openLink" href="#">Obsidianで開く</a></p>
+
+  <script>
+    (function () {
+      var u = new URLSearchParams(location.search).get("u");
+      if (!u) return;
+
+      var obsidianUrl = decodeURIComponent(u);
+
+      var a = document.getElementById("openLink");
+      a.href = obsidianUrl;
+
+      setTimeout(function () { location.href = obsidianUrl; }, 200);
+    })();
+  </script>
+</body>
+</html>
