@@ -6,122 +6,229 @@
   <meta name="color-scheme" content="dark" />
   <title>Open in Obsidian</title>
 
+  <!-- 数字だけフォント改善（GitHub Pages上で読み込まれる） -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      /* Obsidian-ish dark palette */
       --bg: #0f1117;
-      --panel: #151a23;
-      --panel-2: #111622;
       --text: #e6e8ee;
       --muted: #a6adbb;
       --border: rgba(255,255,255,0.08);
-      --shadow: 0 10px 30px rgba(0,0,0,0.45);
-      --accent: #a78bfa;      /* purple */
-      --accent-2: #7c3aed;    /* deeper purple */
-      --radius: 16px;
+      --shadow: 0 22px 80px rgba(0,0,0,0.55);
+
+      --accent: #a78bfa;
+      --accent2: #7c3aed;
+
+      --glowA: rgba(167,139,250,0.55);
+      --glowB: rgba(124,58,237,0.35);
+      --glowWarm: rgba(255,120,120,0.45);
+      --glowCool: rgba(110,190,255,0.20);
     }
 
-    *{ box-sizing: border-box; }
-
+    *{ box-sizing:border-box; }
     body{
       margin:0;
       min-height:100vh;
-      color: var(--text);
       background:
-        radial-gradient(1200px 700px at 20% 15%, rgba(167,139,250,0.12), transparent 55%),
-        radial-gradient(900px 600px at 80% 30%, rgba(124,58,237,0.10), transparent 60%),
-        radial-gradient(900px 700px at 50% 100%, rgba(255,255,255,0.03), transparent 55%),
+        radial-gradient(1100px 700px at 70% 15%, rgba(167,139,250,0.14), transparent 55%),
+        radial-gradient(900px 650px at 20% 75%, rgba(124,58,237,0.10), transparent 60%),
+        radial-gradient(900px 700px at 50% 110%, rgba(255,255,255,0.03), transparent 55%),
         var(--bg);
+      color: var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "SF Pro Text",
                    "Segoe UI", "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Sans",
                    "Yu Gothic", "Meiryo", sans-serif;
-      line-height: 1.55;
     }
 
     .wrap{
-      max-width: 920px;
+      max-width: 980px;
       margin: 0 auto;
-      padding: 36px 18px 48px;
+      padding: 26px 16px 48px;
     }
 
     .topbar{
       display:flex;
       align-items:center;
       gap:12px;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
       opacity: 0.95;
     }
-
     .mark{
-      width: 34px;
-      height: 34px;
+      width: 34px; height:34px;
       border-radius: 10px;
-      background:
-        linear-gradient(135deg, rgba(167,139,250,0.95), rgba(124,58,237,0.95));
+      background: linear-gradient(135deg, rgba(167,139,250,0.95), rgba(124,58,237,0.95));
       box-shadow: 0 8px 18px rgba(124,58,237,0.18);
-      position: relative;
-      overflow: hidden;
     }
-    .mark:after{
-      content:"";
-      position:absolute;
-      inset:-40% -20%;
-      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.55), transparent 45%);
-      transform: rotate(18deg);
-      opacity: 0.65;
-    }
-
-    .brand{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-    .brand .title{
-      font-weight: 750;
-      letter-spacing: 0.2px;
-      font-size: 14px;
-    }
+    .brand{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+    .brand .title{ font-weight: 800; letter-spacing:0.2px; font-size:14px; }
     .brand .sub{
       font-size: 12px;
       color: var(--muted);
       white-space: nowrap;
-      overflow: hidden;
+      overflow:hidden;
       text-overflow: ellipsis;
-      max-width: 80vw;
+      max-width: 82vw;
     }
 
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), transparent 25%), var(--panel);
+      position:relative;
+      border-radius: 18px;
       border: 1px solid var(--border);
-      border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 20px 18px;
+      overflow:hidden;
+
+      aspect-ratio: 655 / 342;
+      width: min(920px, 100%);
+      margin: 0 auto;
+
+      background:
+        radial-gradient(700px 520px at 78% 65%, rgba(0,0,0,0.35), transparent 55%),
+        radial-gradient(900px 700px at 30% 20%, rgba(255,255,255,0.06), transparent 55%),
+        linear-gradient(110deg, rgba(30,35,60,0.95), rgba(24,28,50,0.95) 45%, rgba(40,18,36,0.92));
+    }
+    .card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 3px);
+      mix-blend-mode: overlay;
+      opacity: 0.18;
     }
 
-    .hero{
+    .glow{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      filter: blur(2px);
+    }
+    .glow--warm{
+      background:
+        radial-gradient(520px 420px at 88% 55%, var(--glowWarm), transparent 60%),
+        radial-gradient(420px 320px at 70% 45%, rgba(255,160,120,0.18), transparent 65%);
+      opacity: 0.95;
+    }
+    .glow--cool{
+      background:
+        radial-gradient(520px 420px at 46% 45%, var(--glowA), transparent 60%),
+        radial-gradient(420px 320px at 55% 35%, var(--glowB), transparent 65%),
+        radial-gradient(360px 260px at 22% 55%, var(--glowCool), transparent 70%);
+      opacity: 0.75;
+    }
+
+    .orb{
+      position:absolute;
+      right: 10%;
+      bottom: 10%;
+      width: 36%;
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      background: linear-gradient(140deg, rgba(72,84,140,0.85), rgba(30,36,66,0.95) 55%, rgba(16,18,36,0.98));
+      box-shadow:
+        -14px -18px 110px rgba(0,0,0,0.55),
+        -10px -15px 90px rgba(25,28,65,0.65);
+      opacity: 0.95;
+    }
+    .orb--small{
+      position:absolute;
+      right: 46%;
+      top: -7%;
+      width: 9%;
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      background: linear-gradient(140deg, rgba(72,84,140,0.85), rgba(30,36,66,0.95));
+      box-shadow: -10px -15px 70px rgba(25,28,65,0.6);
+      opacity: 0.9;
+    }
+
+    .comets{
+      position:absolute;
+      top: 30%;
+      left: 25%;
+      width: 80px;
+      height: 60px;
+      pointer-events:none;
+    }
+    .comet{
+      position:absolute;
+      width: 8px; height:8px;
+      border-radius:999px;
+      background: rgba(255,255,255,0.95);
+      box-shadow: 0 0 10px rgba(255,255,255,0.35);
+    }
+    .comet::before, .comet::after{
+      content:"";
+      position:absolute;
+      left: 0; top: 0;
+      border-radius: 20px;
+      transform: rotate(-45deg);
+      background: linear-gradient(to bottom, rgba(255,255,255,0.26), rgba(255,255,255,0.18) 30%, rgba(255,255,255,0) 100%);
+    }
+    .comet::before{
+      width: 18px; height: 70px;
+      transform-origin: -2px 13px;
+    }
+    .comet::after{
+      width: 12px; height: 80px;
+      transform-origin: 0px 8px;
+    }
+    .comet--second{
+      left: 34px;
+      top: -14px;
+      transform: scale(0.65);
+      opacity: 0.85;
+    }
+
+    /* 年＋テキストをセットで配置（少し右へ） */
+    .yearBlock{
+      position:absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -55%) translateX(20px); /* ←右に少し */
       display:flex;
-      flex-direction:column;
-      gap: 10px;
-      margin-bottom: 14px;
+      align-items:flex-end; /* 下揃え */
+      gap: 18px;
+      z-index: 4;
+      pointer-events:none;
+      user-select:none;
     }
 
-    .hero h1{
-      margin:0;
-      font-size: 18px;
-      letter-spacing: 0.2px;
+    .year{
+      text-align:center;
+      font-family: "Oswald", ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "SF Pro Text", sans-serif;
+      font-weight: 300;
+      letter-spacing: 1px;
+      line-height: 0.86;
+      font-size: clamp(78px, 11.5vw, 128px);
+      color: rgba(255,255,255,0.70);
+      text-shadow: 0 10px 40px rgba(0,0,0,0.35);
     }
 
-    .hero p{
-      margin:0;
-      color: var(--muted);
-      font-size: 13px;
+    /* thankyou を指定文言に差し替え、26の下に合わせて横並び */
+    .hint{
+      font-weight: 300;
+      letter-spacing: 1px;
+      line-height: 1.35;
+      font-size: 12px;
+      color: rgba(255,255,255,0.50);
+      text-transform: none;
+      margin-bottom: -8px; /* “26”のベースライン感を作る微調整 */
+      max-width: 220px;
     }
 
     .actions{
+      position:absolute;
+      left: 50%;
+      bottom: 14%;
+      transform: translateX(-50%);
+      width: min(420px, 86%);
       display:flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 14px;
+      justify-content:center;
+      z-index: 5;
     }
 
     .btn{
@@ -130,88 +237,69 @@
       justify-content:center;
       gap:10px;
       padding: 12px 14px;
-      border-radius: 12px;
+      width: 100%;
+      border-radius: 14px;
       border: 1px solid rgba(167,139,250,0.35);
-      background:
-        linear-gradient(135deg, rgba(167,139,250,0.18), rgba(124,58,237,0.10));
+      background: linear-gradient(135deg, rgba(167,139,250,0.18), rgba(124,58,237,0.10));
       color: var(--text);
       text-decoration:none;
-      font-weight: 700;
-      font-size: 14px;
-      min-width: 220px;
+      font-weight: 750;
+      font-size: 15px;
       transition: transform .12s ease, border-color .12s ease, background .12s ease;
-      user-select:none;
       -webkit-tap-highlight-color: transparent;
+      backdrop-filter: blur(6px);
     }
     .btn:hover{
       transform: translateY(-1px);
       border-color: rgba(167,139,250,0.55);
-      background:
-        linear-gradient(135deg, rgba(167,139,250,0.24), rgba(124,58,237,0.14));
+      background: linear-gradient(135deg, rgba(167,139,250,0.24), rgba(124,58,237,0.14));
     }
     .btn:active{ transform: translateY(0px); }
-    .btn:focus-visible{
-      outline: 3px solid rgba(167,139,250,0.35);
-      outline-offset: 2px;
-    }
-
     .btn .dot{
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
+      width: 10px; height:10px;
+      border-radius:999px;
       background: var(--accent);
       box-shadow: 0 0 0 4px rgba(167,139,250,0.12);
     }
 
     .meta{
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
+      position:absolute;
+      left: 18px;
+      bottom: 18px;
+      z-index: 6;
       font-size: 12px;
+      color: rgba(255,255,255,0.55);
       display:flex;
       gap: 10px;
-      flex-wrap: wrap;
       align-items:center;
+      pointer-events:none;
+      user-select:none;
     }
-
     .chip{
       display:inline-flex;
       align-items:center;
       gap: 8px;
-      border: 1px solid var(--border);
-      background: var(--panel-2);
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(10,12,18,0.35);
       border-radius: 999px;
       padding: 6px 10px;
+      backdrop-filter: blur(6px);
     }
-
-    .status{
-      display:inline-flex;
-      align-items:center;
-      gap: 8px;
-    }
-
     .pulse{
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
+      width: 8px; height:8px;
+      border-radius:999px;
       background: var(--accent);
       box-shadow: 0 0 0 0 rgba(167,139,250,0.35);
       animation: pulse 1.6s infinite;
     }
-
     @keyframes pulse{
       0% { box-shadow: 0 0 0 0 rgba(167,139,250,0.0); }
       30% { box-shadow: 0 0 0 6px rgba(167,139,250,0.18); }
       100% { box-shadow: 0 0 0 14px rgba(167,139,250,0.0); }
     }
-
-    @media (max-width: 520px){
-      .btn{ min-width: 100%; }
-      .wrap{ padding-top: 22px; }
-    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="topbar" aria-hidden="true">
@@ -223,9 +311,20 @@
     </div>
 
     <div class="card">
-      <div class="hero">
-        <h1>自動で開かない場合は、下のリンクをタップ</h1>
-        <p>環境によっては自動遷移が制限されるため、手動リンクを併設しています</p>
+      <div class="glow glow--cool"></div>
+      <div class="glow glow--warm"></div>
+
+      <div class="comets">
+        <div class="comet"></div>
+        <div class="comet comet--second"></div>
+      </div>
+
+      <div class="orb"></div>
+      <div class="orb orb--small"></div>
+
+      <div class="yearBlock">
+        <div class="year" id="yearText">20<br>26</div>
+        <div class="hint">自動で開かない場合は<br>リンクをタップ</div>
       </div>
 
       <div class="actions">
@@ -237,7 +336,7 @@
 
       <div class="meta">
         <span class="chip">
-          <span class="status"><span class="pulse" aria-hidden="true"></span>status</span>
+          <span class="pulse" aria-hidden="true"></span>
           <span id="statusText">waiting…</span>
         </span>
       </div>
@@ -248,48 +347,34 @@
     (function () {
       var statusText = document.getElementById("statusText");
       var subLine = document.getElementById("subLine");
+      var yearText = document.getElementById("yearText");
       var u = new URLSearchParams(location.search).get("u");
 
       function extractTitleFromObsidianUrl(obsidianUrl) {
-        // 1) URLとして解釈して file/path を取る
-        // 2) フォルダがあれば末尾だけ
-        // 3) .md があれば削る
         try {
           var urlObj = new URL(obsidianUrl);
           var file = urlObj.searchParams.get("file") || urlObj.searchParams.get("path");
           if (!file) return null;
-
-          // 既に decode 済みで来る想定だが、念のため %2F などが残っていた場合を救う
           try { file = decodeURIComponent(file); } catch (e) {}
-
-          // フォルダを含む場合は最後だけ
           var parts = file.split("/");
           var last = parts[parts.length - 1];
-
-          // .md 拡張子を落とす（付いている場合のみ）
-          if (last.slice(-3).toLowerCase() === ".md") {
-            last = last.slice(0, -3);
-          }
+          if (last.slice(-3).toLowerCase() === ".md") last = last.slice(0, -3);
           return last || null;
         } catch (e) {
           return null;
         }
       }
 
-      if (!u) {
-        statusText.textContent = "missing u";
-        return;
-      }
+      // 年は常に現在年へ（例：2026）
+      var y = String(new Date().getFullYear());
+      yearText.innerHTML = y.slice(0, 2) + "<br>" + y.slice(2);
+
+      if (!u) { statusText.textContent = "missing u"; return; }
 
       var obsidianUrl;
-      try {
-        obsidianUrl = decodeURIComponent(u);
-      } catch (e) {
-        statusText.textContent = "decode error";
-        return;
-      }
+      try { obsidianUrl = decodeURIComponent(u); }
+      catch (e) { statusText.textContent = "decode error"; return; }
 
-      // タイトル表示（obsidian:// の部分をタイトルに置換）
       var title = extractTitleFromObsidianUrl(obsidianUrl) || "Untitled";
       subLine.textContent = title + " へ遷移";
       document.title = title + " | Open in Obsidian";
@@ -298,17 +383,12 @@
       a.href = obsidianUrl;
 
       statusText.textContent = "redirecting…";
-
-      // 自動遷移は弾かれることがあるので、試すだけ試す
       setTimeout(function () {
-        try {
-          location.href = obsidianUrl;
-          statusText.textContent = "attempted";
-        } catch (e) {
-          statusText.textContent = "blocked";
-        }
+        try { location.href = obsidianUrl; statusText.textContent = "attempted"; }
+        catch (e) { statusText.textContent = "blocked"; }
       }, 200);
     })();
   </script>
 </body>
 </html>
+
