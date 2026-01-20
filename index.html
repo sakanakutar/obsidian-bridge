@@ -6,403 +6,327 @@
   <meta name="color-scheme" content="dark" />
   <title>Open in Obsidian</title>
 
-  <!-- 数字だけフォント改善（GitHub Pages上で読み込まれる） -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500&display=swap" rel="stylesheet">
-
   <style>
     :root{
-      --bg: #0f1117;
-      --text: #e6e8ee;
-      --muted: #a6adbb;
-      --border: rgba(255,255,255,0.08);
-      --shadow: 0 22px 80px rgba(0,0,0,0.55);
+      /* ここだけ差し替えれば見た目が変わる… */
+      --CARD_BG_URL: "obsidian://open?vault=note&file=images%2Fwhat-wallpapers-are-you-using-with-liquid-glass-v0-5lv32awcq2rf1.webp";
+      --ICON_URL: "obsidian://open?vault=note&file=images%2Fimage%20(102).png";
 
-      --accent: #a78bfa;
-      --accent2: #7c3aed;
+      --bg0:#0b0d12;
+      --bg1:#0f1117;
 
-      --glowA: rgba(167,139,250,0.55);
-      --glowB: rgba(124,58,237,0.35);
-      --glowWarm: rgba(255,120,120,0.45);
-      --glowCool: rgba(110,190,255,0.20);
+      --text:#e7e9f2;
+      --muted:#a6adbb;
+
+      --accent:#a78bfa;
+      --accent2:#7c3aed;
+
+      --border:rgba(255,255,255,0.10);
+      --border2:rgba(255,255,255,0.16);
+
+      --glassA:rgba(21,26,35,0.34);
+      --glassB:rgba(17,22,34,0.24);
+
+      --shadow: 0 18px 48px rgba(0,0,0,0.55);
+      --radius:18px;
     }
 
     *{ box-sizing:border-box; }
+
     body{
       margin:0;
       min-height:100vh;
+      color:var(--text);
       background:
-        radial-gradient(1100px 700px at 70% 15%, rgba(167,139,250,0.14), transparent 55%),
-        radial-gradient(900px 650px at 20% 75%, rgba(124,58,237,0.10), transparent 60%),
-        radial-gradient(900px 700px at 50% 110%, rgba(255,255,255,0.03), transparent 55%),
-        var(--bg);
-      color: var(--text);
+        radial-gradient(1100px 700px at 18% 12%, rgba(167,139,250,0.14), transparent 56%),
+        radial-gradient(900px 600px at 84% 26%, rgba(124,58,237,0.10), transparent 60%),
+        radial-gradient(900px 720px at 50% 110%, rgba(255,255,255,0.035), transparent 58%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
       font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "SF Pro Text",
                    "Segoe UI", "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Sans",
                    "Yu Gothic", "Meiryo", sans-serif;
+      line-height:1.55;
     }
 
     .wrap{
-      max-width: 920px;   /* 980 → 920（カードの max と同じ） */
-  margin: 0 auto;
-  padding: 26px 16px 48px;
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 30px 18px 52px;
     }
 
     .topbar{
       display:flex;
       align-items:center;
       gap:12px;
-      margin-bottom: 14px;
-      opacity: 0.95;
+      margin-bottom: 16px;
+      opacity:0.96;
     }
+
     .mark{
-      width: 34px; height:34px;
+      width: 34px;
+      height: 34px;
       border-radius: 10px;
+      overflow:hidden;
+      border: 1px solid rgba(255,255,255,0.14);
       background: linear-gradient(135deg, rgba(167,139,250,0.95), rgba(124,58,237,0.95));
-      box-shadow: 0 8px 18px rgba(124,58,237,0.18);
+      box-shadow: 0 10px 22px rgba(124,58,237,0.18);
+      flex: 0 0 auto;
+      position:relative;
     }
-    .brand{ display:flex; flex-direction:column; gap:2px; min-width:0; }
-    .brand .title{ font-weight: 800; letter-spacing:0.2px; font-size:14px; }
+    .mark img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter: saturate(1.1) contrast(1.05);
+    }
+    .mark:after{
+      content:"";
+      position:absolute;
+      inset:-45% -30%;
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.52), transparent 50%);
+      transform: rotate(18deg);
+      opacity:0.55;
+      pointer-events:none;
+    }
+
+    .brand{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+    .brand .title{
+      font-weight: 780;
+      letter-spacing: 0.2px;
+      font-size: 14px;
+    }
     .brand .sub{
       font-size: 12px;
       color: var(--muted);
       white-space: nowrap;
-      overflow:hidden;
+      overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 82vw;
+      max-width: 100%;
     }
 
+    /* 大枠（リキッドガラス + 背景画像） */
     .card{
       position:relative;
-      border-radius: 18px;
+      border-radius: var(--radius);
+      padding: 18px 16px;
       border: 1px solid var(--border);
       box-shadow: var(--shadow);
       overflow:hidden;
-
-      width: 100%;             /* min(920px, 100%) → 100% にしてwrap幅と一致 */
-  margin: 0;               /* 0 auto → 0 */
-  aspect-ratio: auto;
-
-  /* absolute要素だけだと高さが0になり得るので最低高さを与える */
-  min-height: 300px;
-
-  /* 画面が狭い時は少し縮むように（好みで数値は調整） */
-  height: clamp(280px, 42vw, 500px);
-
-      background:
-        radial-gradient(700px 520px at 78% 65%, rgba(0,0,0,0.35), transparent 55%),
-        radial-gradient(900px 700px at 30% 20%, rgba(255,255,255,0.06), transparent 55%),
-        linear-gradient(110deg, rgba(30,35,60,0.95), rgba(24,28,50,0.95) 45%, rgba(40,18,36,0.92));
+      isolation:isolate;
     }
-    .card::after{
+    .card:before{
       content:"";
       position:absolute;
       inset:0;
-      pointer-events:none;
-      background-image:
-        repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 3px);
-      mix-blend-mode: overlay;
-      opacity: 0.18;
-    }
 
-    .glow{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      filter: blur(2px);
-    }
-    .glow--warm{
+      /* 背景画像 + グラス層 */
       background:
-        radial-gradient(520px 420px at 88% 55%, var(--glowWarm), transparent 60%),
-        radial-gradient(420px 320px at 70% 45%, rgba(255,160,120,0.18), transparent 65%);
-      opacity: 0.95;
-    }
-    .glow--cool{
-      background:
-        radial-gradient(520px 420px at 46% 45%, var(--glowA), transparent 60%),
-        radial-gradient(420px 320px at 55% 35%, var(--glowB), transparent 65%),
-        radial-gradient(360px 260px at 22% 55%, var(--glowCool), transparent 70%);
-      opacity: 0.75;
-    }
+        linear-gradient(180deg, rgba(0,0,0,0.62), rgba(0,0,0,0.52)),
+        radial-gradient(1200px 520px at 20% 10%, rgba(167,139,250,0.14), transparent 60%),
+        radial-gradient(900px 520px at 82% 24%, rgba(124,58,237,0.10), transparent 62%),
+        var(--CARD_BG_URL);
 
-    .orb{
-      position:absolute;
-      right: 10%;
-      bottom: 10%;
-      width: 36%;
-      aspect-ratio: 1 / 1;
-      border-radius: 999px;
-      background: linear-gradient(140deg, rgba(72,84,140,0.85), rgba(30,36,66,0.95) 55%, rgba(16,18,36,0.98));
-      box-shadow:
-        -14px -18px 110px rgba(0,0,0,0.55),
-        -10px -15px 90px rgba(25,28,65,0.65);
-      opacity: 0.95;
-    }
-    .orb--small{
-      position:absolute;
-      right: 46%;
-      top: -7%;
-      width: 9%;
-      aspect-ratio: 1 / 1;
-      border-radius: 999px;
-      background: linear-gradient(140deg, rgba(72,84,140,0.85), rgba(30,36,66,0.95));
-      box-shadow: -10px -15px 70px rgba(25,28,65,0.6);
-      opacity: 0.9;
-    }
+      background-size: cover;
+      background-position: center;
+      transform: scale(1.04);
 
-    .comets{
-      position:absolute;
-      top: 30%;
-      left: 25%;
-      width: 80px;
-      height: 60px;
-      pointer-events:none;
+      filter: saturate(1.05) contrast(1.02);
+      z-index:-3;
     }
-    .comet{
-      position:absolute;
-      width: 8px; height:8px;
-      border-radius:999px;
-      background: rgba(255,255,255,0.95);
-      box-shadow: 0 0 10px rgba(255,255,255,0.35);
-    }
-    .comet::before, .comet::after{
+    .card:after{
       content:"";
       position:absolute;
-      left: 0; top: 0;
-      border-radius: 20px;
-      transform: rotate(-45deg);
-      background: linear-gradient(to bottom, rgba(255,255,255,0.26), rgba(255,255,255,0.18) 30%, rgba(255,255,255,0) 100%);
-    }
-    .comet::before{
-      width: 18px; height: 70px;
-      transform-origin: -2px 13px;
-    }
-    .comet::after{
-      width: 12px; height: 80px;
-      transform-origin: 0px 8px;
-    }
-    .comet--second{
-      left: 34px;
-      top: -14px;
-      transform: scale(0.65);
-      opacity: 0.85;
-    }
-
-    /* 年＋テキストをセットで配置（少し右へ） */
-    .yearBlock{
-      position:absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -55%) translateX(20px); /* ←右に少し */
-      display:flex;
-      align-items:flex-end; /* 下揃え */
-      gap: 18px;
-      z-index: 4;
+      inset:-1px;
+      background:
+        linear-gradient(180deg, var(--glassA), var(--glassB)),
+        linear-gradient(135deg, rgba(255,255,255,0.10), transparent 42%),
+        radial-gradient(700px 380px at 15% 8%, rgba(255,255,255,0.08), transparent 55%),
+        radial-gradient(900px 520px at 85% 32%, rgba(255,255,255,0.05), transparent 60%);
+      backdrop-filter: blur(18px) saturate(1.18);
+      -webkit-backdrop-filter: blur(18px) saturate(1.18);
+      opacity:0.92;
+      z-index:-2;
       pointer-events:none;
-      user-select:none;
     }
 
-    .year{
-      text-align:center;
-      font-family: "Oswald", ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "SF Pro Text", sans-serif;
-      font-weight: 300;
-      letter-spacing: 1px;
-      line-height: 0.86;
-      font-size: clamp(78px, 11.5vw, 128px);
-      color: rgba(255,255,255,0.70);
-      text-shadow: 0 10px 40px rgba(0,0,0,0.35);
+    /* 本文プレビュー（上に、入るだけ入れる） */
+    .preview{
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.20);
+      border-radius: 14px;
+      padding: 12px 12px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(10px) saturate(1.12);
+      -webkit-backdrop-filter: blur(10px) saturate(1.12);
+      overflow:hidden;
+    }
+    .preview pre{
+      margin:0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: rgba(231,233,242,0.92);
+      font-size: 12.8px;
+      line-height: 1.65;
     }
 
-    /* thankyou を指定文言に差し替え、26の下に合わせて横並び */
-    .hint{
-    font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "SF Pro Text",
-               "Segoe UI", "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Sans",
-               "Yu Gothic", "Meiryo", sans-serif;
-      font-weight: 400;
-      letter-spacing: 0px;
-      line-height: 1.35;
-      font-size: 11px;
-      color: rgba(255,255,255,0.50);
-      text-transform: none;
-      margin-bottom: -8px; /* “26”のベースライン感を作る微調整 */
-      max-width: 220px;
+    .note{
+      margin: 0 0 12px 0;
+      color: var(--muted);
+      font-size: 12.5px;
     }
 
     .actions{
-      position:absolute;
-      left: 50%;
-      bottom: 14%;
-      transform: translateX(-50%);
-      width: min(420px, 86%);
       display:flex;
-      justify-content:center;
-      z-index: 5;
+      gap:12px;
+      flex-wrap:wrap;
     }
 
+    /* ボタン（リキッドガラス寄せ） */
     .btn{
+      position:relative;
       display:inline-flex;
       align-items:center;
       justify-content:center;
       gap:10px;
       padding: 12px 14px;
-      width: 100%;
       border-radius: 14px;
-      border: 1px solid rgba(167,139,250,0.35);
-      background: linear-gradient(135deg, rgba(167,139,250,0.18), rgba(124,58,237,0.10));
+      min-width: 220px;
+
       color: var(--text);
       text-decoration:none;
-      font-weight: 750;
-      font-size: 15px;
-      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      font-weight: 780;
+      font-size: 14px;
+
+      border: 1px solid rgba(167,139,250,0.30);
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(16px) saturate(1.25);
+      -webkit-backdrop-filter: blur(16px) saturate(1.25);
+
+      box-shadow:
+        0 14px 34px rgba(0,0,0,0.46),
+        inset 0 1px 0 rgba(255,255,255,0.14),
+        inset 0 -1px 0 rgba(0,0,0,0.22);
+
+      user-select:none;
       -webkit-tap-highlight-color: transparent;
-      backdrop-filter: blur(6px);
+
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+      overflow:hidden;
+    }
+    .btn:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(640px 260px at 22% 18%, rgba(167,139,250,0.22), transparent 56%),
+        radial-gradient(560px 260px at 78% 32%, rgba(124,58,237,0.16), transparent 60%),
+        linear-gradient(135deg, rgba(255,255,255,0.12), transparent 44%);
+      opacity:0.78;
+      pointer-events:none;
     }
     .btn:hover{
       transform: translateY(-1px);
-      border-color: rgba(167,139,250,0.55);
-      background: linear-gradient(135deg, rgba(167,139,250,0.24), rgba(124,58,237,0.14));
+      border-color: rgba(167,139,250,0.50);
+      box-shadow:
+        0 18px 44px rgba(0,0,0,0.52),
+        inset 0 1px 0 rgba(255,255,255,0.16),
+        inset 0 -1px 0 rgba(0,0,0,0.24);
     }
     .btn:active{ transform: translateY(0px); }
-    .btn .dot{
-      width: 10px; height:10px;
-      border-radius:999px;
+    .btn:focus-visible{
+      outline: 3px solid rgba(167,139,250,0.28);
+      outline-offset: 2px;
+    }
+
+    .dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
       background: var(--accent);
       box-shadow: 0 0 0 4px rgba(167,139,250,0.12);
+      flex: 0 0 auto;
+      position:relative;
+      z-index:1;
+    }
+    .btn span.label{
+      position:relative;
+      z-index:1;
     }
 
     .meta{
-      position:absolute;
-      left: 18px;
-      bottom: 18px;
-      z-index: 6;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      color: var(--muted);
       font-size: 12px;
-      color: rgba(255,255,255,0.55);
       display:flex;
-      gap: 10px;
+      flex-wrap:wrap;
+      gap:10px;
       align-items:center;
-      pointer-events:none;
-      user-select:none;
     }
     .chip{
       display:inline-flex;
       align-items:center;
-      gap: 8px;
+      gap:8px;
       border: 1px solid rgba(255,255,255,0.10);
-      background: rgba(10,12,18,0.35);
+      background: rgba(0,0,0,0.18);
       border-radius: 999px;
       padding: 6px 10px;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(10px) saturate(1.1);
+      -webkit-backdrop-filter: blur(10px) saturate(1.1);
     }
     .pulse{
-      width: 8px; height:8px;
-      border-radius:999px;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
       background: var(--accent);
       box-shadow: 0 0 0 0 rgba(167,139,250,0.35);
       animation: pulse 1.6s infinite;
     }
     @keyframes pulse{
       0% { box-shadow: 0 0 0 0 rgba(167,139,250,0.0); }
-      30% { box-shadow: 0 0 0 6px rgba(167,139,250,0.18); }
+      30% { box-shadow: 0 0 0 6px rgba(167,139,250,0.16); }
       100% { box-shadow: 0 0 0 14px rgba(167,139,250,0.0); }
     }
-   /* ===== position tuning (PC含む共通) ===== */
 
-/* 年＋文言を少し上へ */
-.yearBlock{
-  top: 47%; /* 50% -> 47% */
-}
-
-/* ボタンを少し上へ */
-.actions{
-  bottom: 18%; /* 14% -> 18% */
-}
-
-/* 下の安全余白（iPhoneのバー等）を考慮：被り軽減 */
-.actions{
-  bottom: calc(18% + env(safe-area-inset-bottom));
-}
-.meta{
-  bottom: calc(18px + env(safe-area-inset-bottom));
-}
-
-
-/* ===== mobile tuning ===== */
-@media (max-width: 520px){
-
-  /* スマホではさらに上へ（詰まりを避ける） */
-  .yearBlock{
-    top: 44%;
-    transform: translate(-50%, -56%) translateX(6px);
-  }
-  .actions{
-    bottom: calc(12% + env(safe-area-inset-bottom));
-    width: min(520px, 92%);
-  }
-
-  /* 被りの本丸：ステータスを上に逃がす */
-  .meta{
-    top: 12px;
-    bottom: auto;
-    left: 12px;
-  }
-
-  /* スマホでピンク転びする要因を弱める */
-  .glow--warm{ opacity: 0.25; } /* 暖色を抑える */
-  .glow--cool{ opacity: 0.65; } /* 寒色も少し抑える */
-
-  /* iOSでmix-blend-modeが派手に転ぶので穏当にする */
-  .card::after{
-    mix-blend-mode: normal;
-    opacity: 0.10;
-  }
-
-  /* 全体の彩度・コントラストを軽く補正してPC寄せ */
-  .card{
-    filter: saturate(0.92) contrast(1.04);
-  }
-}
-
-/* さらに小さい端末 */
-@media (max-width: 380px){
-  .yearBlock{ top: 42%; }
-  .actions{ bottom: calc(14% + env(safe-area-inset-bottom)); }
-}
-
+    @media (max-width: 520px){
+      .btn{ min-width: 100%; }
+      .wrap{ padding-top: 22px; }
+    }
   </style>
 </head>
 
 <body>
   <div class="wrap">
     <div class="topbar" aria-hidden="true">
-      <div class="mark"></div>
+      <div class="mark">
+        <img id="iconImg" alt="" />
+      </div>
       <div class="brand">
         <div class="title">Obsidian Bridge</div>
-        <div class="sub" id="subLine">obsidian:// へ遷移</div>
+        <div class="sub" id="subLine">… へ遷移</div>
       </div>
     </div>
 
     <div class="card">
-      <div class="glow glow--cool"></div>
-      <div class="glow glow--warm"></div>
-
-      <div class="comets">
-        <div class="comet"></div>
-        <div class="comet comet--second"></div>
+      <!-- 本文プレビュー（最上段 / 入るだけ入れる） -->
+      <div class="preview" id="previewBox">
+        <pre id="previewText"></pre>
       </div>
 
-      <div class="orb"></div>
-      <div class="orb orb--small"></div>
-
-      <div class="yearBlock">
-        <div class="year" id="yearText">20<br>26</div>
-        <div class="hint">自動で開かない場合は<br>リンクをタップ</div>
-      </div>
+      <!-- 控えめ文言（以前の“環境によっては〜”と同格の弱さにしてある） -->
+      <p class="note">自動で開かない場合は、下のリンクをタップ…</p>
 
       <div class="actions">
         <a id="openLink" class="btn" href="#">
           <span class="dot" aria-hidden="true"></span>
-          Obsidianで開く
+          <span class="label">Obsidianで開く</span>
         </a>
       </div>
 
@@ -419,45 +343,92 @@
     (function () {
       var statusText = document.getElementById("statusText");
       var subLine = document.getElementById("subLine");
-      var yearText = document.getElementById("yearText");
-      var u = new URLSearchParams(location.search).get("u");
+      var iconImg = document.getElementById("iconImg");
 
-      function extractTitleFromObsidianUrl(obsidianUrl) {
+      // CSS変数のICON_URLを読み取ってアイコンに設定（未設定でも動く）
+      try {
+        var iconUrl = getComputedStyle(document.documentElement).getPropertyValue("--ICON_URL").trim();
+        if (iconUrl) iconImg.src = iconUrl.replace(/^["']|["']$/g, "");
+      } catch (e) {}
+
+      var params = new URLSearchParams(location.search);
+      var u = params.get("u");   // 必須: obsidian://... をURLエンコードして渡す
+      var p = params.get("p");   // 任意: プレビュー本文（URLエンコードして渡す）
+
+      // サンプル表示（pが無い時はダミーテキストを入れて見た目確認できるようにする）
+      var previewText = document.getElementById("previewText");
+      if (p) {
         try {
-          var urlObj = new URL(obsidianUrl);
-          var file = urlObj.searchParams.get("file") || urlObj.searchParams.get("path");
-          if (!file) return null;
-          try { file = decodeURIComponent(file); } catch (e) {}
-          var parts = file.split("/");
-          var last = parts[parts.length - 1];
-          if (last.slice(-3).toLowerCase() === ".md") last = last.slice(0, -3);
-          return last || null;
+          previewText.textContent = decodeURIComponent(p);
         } catch (e) {
-          return null;
+          previewText.textContent = "（プレビューのデコードに失敗）";
+        }
+      } else {
+        previewText.textContent =
+          "（プレビュー例）\n" +
+          "これは遷移ページのサンプル表示です…\n\n" +
+          "・ノート本文の冒頭数行を ?p= に入れて渡すと、ここにそのまま出ます…\n" +
+          "・長文でも切らずに入るだけ入れます…\n\n" +
+          "例：\n" +
+          "今日のメモ：\n" +
+          "無題のファイル 1 の要点をここに表示…\n" +
+          "次のアクション：リンクをタップしてObsidianへ…";
+      }
+
+      if (!u) {
+        statusText.textContent = "missing u";
+        subLine.textContent = "missing u へ遷移";
+        return;
+      }
+
+      var obsidianUrl;
+      try {
+        obsidianUrl = decodeURIComponent(u);
+      } catch (e) {
+        statusText.textContent = "decode error";
+        subLine.textContent = "decode error へ遷移";
+        return;
+      }
+
+      // ノートタイトル推定: obsidian://open?...&file=... から file を読む（無ければ path）
+      function getTitleFromObsidianUrl(url) {
+        try {
+          var q = url.split("?")[1] || "";
+          var qs = new URLSearchParams(q);
+
+          var file = qs.get("file");
+          var path = qs.get("path");
+          var raw = file || path || "";
+          if (!raw) return "unknown";
+
+          raw = raw.replace(/\\/g, "/");
+          var parts = raw.split("/");
+          var last = parts[parts.length - 1] || raw;
+
+          last = last.replace(/\.md$/i, "");
+          return last || "unknown";
+        } catch (e) {
+          return "unknown";
         }
       }
 
-      // 年は常に現在年へ（例：2026）
-      var y = String(new Date().getFullYear());
-      yearText.innerHTML = y.slice(0, 2) + "<br>" + y.slice(2);
-
-      if (!u) { statusText.textContent = "missing u"; return; }
-
-      var obsidianUrl;
-      try { obsidianUrl = decodeURIComponent(u); }
-      catch (e) { statusText.textContent = "decode error"; return; }
-
-      var title = extractTitleFromObsidianUrl(obsidianUrl) || "Untitled";
+      var title = getTitleFromObsidianUrl(obsidianUrl);
       subLine.textContent = title + " へ遷移";
-      document.title = title + " | Open in Obsidian";
 
+      // ボタンにURLを設定
       var a = document.getElementById("openLink");
       a.href = obsidianUrl;
 
       statusText.textContent = "redirecting…";
+
+      // 自動遷移を試す（弾かれる環境があるので、ボタンを保険として残す）
       setTimeout(function () {
-        try { location.href = obsidianUrl; statusText.textContent = "attempted"; }
-        catch (e) { statusText.textContent = "blocked"; }
+        try {
+          location.href = obsidianUrl;
+          statusText.textContent = "attempted";
+        } catch (e) {
+          statusText.textContent = "blocked";
+        }
       }, 200);
     })();
   </script>
