@@ -8,7 +8,11 @@
 
   <style>
     :root{
+      /* 注意: 多くのブラウザは img に obsidian:// を許可しない */
       --ICON_URL: "obsidian://open?vault=note&file=images%2Fimage%20(102).png";
+
+      /* カード背景（任意）: 例) "https://example.com/bg.jpg" */
+      --CARD_BG_URL: none;
 
       --bg0:#0b0d12;
       --bg1:#0f1117;
@@ -107,21 +111,34 @@
       text-overflow: ellipsis;
       max-width: 100%;
     }
-    
-      /* 背景画像 + グラス層 */
+
+    .card{
+      position:relative;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      padding: 16px;
+      background: rgba(0,0,0,0.18);
+    }
+
+    /* 背景画像 + グラス層（元コードで欠落していたセレクタを復元） */
+    .card:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
       background:
         linear-gradient(180deg, rgba(0,0,0,0.62), rgba(0,0,0,0.52)),
         radial-gradient(1200px 520px at 20% 10%, rgba(167,139,250,0.14), transparent 60%),
         radial-gradient(900px 520px at 82% 24%, rgba(124,58,237,0.10), transparent 62%),
         var(--CARD_BG_URL);
-
       background-size: cover;
       background-position: center;
       transform: scale(1.04);
-
       filter: saturate(1.05) contrast(1.02);
       z-index:-3;
     }
+
     .card:after{
       content:"";
       position:absolute;
@@ -148,6 +165,7 @@
       backdrop-filter: blur(10px) saturate(1.12);
       -webkit-backdrop-filter: blur(10px) saturate(1.12);
       overflow:hidden;
+      max-height: 38vh;
     }
     .preview pre{
       margin:0;
@@ -298,9 +316,10 @@
     </div>
 
     <div class="card">
+      <div class="preview" id="previewBox" hidden>
+        <pre id="previewText"></pre>
       </div>
 
-      <!-- 控えめ文言（以前の“環境によっては〜”と同格の弱さにしてある） -->
       <p class="note">自動で開かない場合は、下のリンクをタップ</p>
 
       <div class="actions">
@@ -324,23 +343,30 @@
       var statusText = document.getElementById("statusText");
       var subLine = document.getElementById("subLine");
       var iconImg = document.getElementById("iconImg");
+      var previewBox = document.getElementById("previewBox");
+      var previewText = document.getElementById("previewText");
+      var openLink = document.getElementById("openLink");
 
-      // CSS変数のICON_URLを読み取ってアイコンに設定（未設定でも動く）
+      // CSS変数のICON_URLを読み取ってアイコンに設定（ただし obsidian:// は表示できない場合が多い）
       try {
-        var iconUrl = getComputedStyle(document.documentElement).getPropertyValue("--ICON_URL").trim();
-        if (iconUrl) iconImg.src = iconUrl.replace(/^["']|["']$/g, "");
+        var iconUrlRaw = getComputedStyle(document.documentElement).getPropertyValue("--ICON_URL").trim();
+        var iconUrl = iconUrlRaw ? iconUrlRaw.replace(/^["']|["']$/g, "") : "";
+        if (iconUrl && !/^obsidian:\/\//i.test(iconUrl)) {
+          iconImg.src = iconUrl;
+        } else {
+          // obsidian:// を img に突っ込むのは失敗しがちなので空にしておく
+          iconImg.removeAttribute("src");
+        }
       } catch (e) {}
 
       var params = new URLSearchParams(location.search);
-      var u = params.get("u");   // 必須: obsidian://... をURLエンコードして渡す
-      var p = params.get("p");   // 任意: プレビュー本文（URLエンコードして渡す）
-
-      
-      }
+      var u = params.get("u"); // 必須: obsidian://... をURLエンコードして渡す
+      var p = params.get("p"); // 任意: プレビュー本文（URLエンコードして渡す）
 
       if (!u) {
         statusText.textContent = "missing u";
         subLine.textContent = "missing u へ遷移";
+        openLink.href = "#";
         return;
       }
 
@@ -350,13 +376,15 @@
       } catch (e) {
         statusText.textContent = "decode error";
         subLine.textContent = "decode error へ遷移";
+        openLink.href = "#";
         return;
       }
 
       // ノートタイトル推定: obsidian://open?...&file=... から file を読む（無ければ path）
       function getTitleFromObsidianUrl(url) {
         try {
-          var q = url.split("?")[1] || "";
+          var qpos = url.indexOf("?");
+          var q = qpos >= 0 ? url.slice(qpos + 1) : "";
           var qs = new URLSearchParams(q);
 
           var file = qs.get("file");
@@ -379,8 +407,19 @@
       subLine.textContent = title + " へ遷移";
 
       // ボタンにURLを設定
-      var a = document.getElementById("openLink");
-      a.href = obsidianUrl;
+      openLink.href = obsidianUrl;
+
+      // プレビュー表示（任意）
+      if (p) {
+        try {
+          var decoded = decodeURIComponent(p);
+          previewText.textContent = decoded;
+          previewBox.hidden = false;
+        } catch (e) {
+          // 失敗してもプレビューは出さない
+          previewBox.hidden = true;
+        }
+      }
 
       statusText.textContent = "redirecting…";
 
@@ -397,4 +436,3 @@
   </script>
 </body>
 </html>
-
