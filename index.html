@@ -85,7 +85,7 @@
   aspect-ratio: auto;
 
   /* absolute要素だけだと高さが0になり得るので最低高さを与える */
-  min-height: 320px;
+  min-height: 300px;
 
   /* 画面が狭い時は少し縮むように（好みで数値は調整） */
   height: clamp(280px, 42vw, 500px);
@@ -216,10 +216,13 @@
 
     /* thankyou を指定文言に差し替え、26の下に合わせて横並び */
     .hint{
-      font-weight: 300;
-      letter-spacing: 1px;
+    font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "SF Pro Text",
+               "Segoe UI", "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Sans",
+               "Yu Gothic", "Meiryo", sans-serif;
+      font-weight: 400;
+      letter-spacing: 0px;
       line-height: 1.35;
-      font-size: 12px;
+      font-size: 11px;
       color: rgba(255,255,255,0.50);
       text-transform: none;
       margin-bottom: -8px; /* “26”のベースライン感を作る微調整 */
@@ -303,6 +306,69 @@
       30% { box-shadow: 0 0 0 6px rgba(167,139,250,0.18); }
       100% { box-shadow: 0 0 0 14px rgba(167,139,250,0.0); }
     }
+   /* ===== position tuning (PC含む共通) ===== */
+
+/* 年＋文言を少し上へ */
+.yearBlock{
+  top: 47%; /* 50% -> 47% */
+}
+
+/* ボタンを少し上へ */
+.actions{
+  bottom: 18%; /* 14% -> 18% */
+}
+
+/* 下の安全余白（iPhoneのバー等）を考慮：被り軽減 */
+.actions{
+  bottom: calc(18% + env(safe-area-inset-bottom));
+}
+.meta{
+  bottom: calc(18px + env(safe-area-inset-bottom));
+}
+
+
+/* ===== mobile tuning ===== */
+@media (max-width: 520px){
+
+  /* スマホではさらに上へ（詰まりを避ける） */
+  .yearBlock{
+    top: 44%;
+    transform: translate(-50%, -56%) translateX(6px);
+  }
+  .actions{
+    bottom: calc(12% + env(safe-area-inset-bottom));
+    width: min(520px, 92%);
+  }
+
+  /* 被りの本丸：ステータスを上に逃がす */
+  .meta{
+    top: 12px;
+    bottom: auto;
+    left: 12px;
+  }
+
+  /* スマホでピンク転びする要因を弱める */
+  .glow--warm{ opacity: 0.25; } /* 暖色を抑える */
+  .glow--cool{ opacity: 0.65; } /* 寒色も少し抑える */
+
+  /* iOSでmix-blend-modeが派手に転ぶので穏当にする */
+  .card::after{
+    mix-blend-mode: normal;
+    opacity: 0.10;
+  }
+
+  /* 全体の彩度・コントラストを軽く補正してPC寄せ */
+  .card{
+    filter: saturate(0.92) contrast(1.04);
+  }
+}
+
+/* さらに小さい端末 */
+@media (max-width: 380px){
+  .yearBlock{ top: 42%; }
+  .actions{ bottom: calc(14% + env(safe-area-inset-bottom)); }
+}
+
   </style>
 </head>
 
