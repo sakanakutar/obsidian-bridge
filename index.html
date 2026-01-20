@@ -8,8 +8,6 @@
 
   <style>
     :root{
-      /* ここだけ差し替えれば見た目が変わる… */
-      --CARD_BG_URL: "obsidian://open?vault=note&file=images%2Fwhat-wallpapers-are-you-using-with-liquid-glass-v0-5lv32awcq2rf1.webp";
       --ICON_URL: "obsidian://open?vault=note&file=images%2Fimage%20(102).png";
 
       --bg0:#0b0d12;
@@ -109,22 +107,7 @@
       text-overflow: ellipsis;
       max-width: 100%;
     }
-
-    /* 大枠（リキッドガラス + 背景画像） */
-    .card{
-      position:relative;
-      border-radius: var(--radius);
-      padding: 18px 16px;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-      isolation:isolate;
-    }
-    .card:before{
-      content:"";
-      position:absolute;
-      inset:0;
-
+    
       /* 背景画像 + グラス層 */
       background:
         linear-gradient(180deg, rgba(0,0,0,0.62), rgba(0,0,0,0.52)),
@@ -315,13 +298,10 @@
     </div>
 
     <div class="card">
-      <!-- 本文プレビュー（最上段 / 入るだけ入れる） -->
-      <div class="preview" id="previewBox">
-        <pre id="previewText"></pre>
       </div>
 
       <!-- 控えめ文言（以前の“環境によっては〜”と同格の弱さにしてある） -->
-      <p class="note">自動で開かない場合は、下のリンクをタップ…</p>
+      <p class="note">自動で開かない場合は、下のリンクをタップ</p>
 
       <div class="actions">
         <a id="openLink" class="btn" href="#">
@@ -355,24 +335,7 @@
       var u = params.get("u");   // 必須: obsidian://... をURLエンコードして渡す
       var p = params.get("p");   // 任意: プレビュー本文（URLエンコードして渡す）
 
-      // サンプル表示（pが無い時はダミーテキストを入れて見た目確認できるようにする）
-      var previewText = document.getElementById("previewText");
-      if (p) {
-        try {
-          previewText.textContent = decodeURIComponent(p);
-        } catch (e) {
-          previewText.textContent = "（プレビューのデコードに失敗）";
-        }
-      } else {
-        previewText.textContent =
-          "（プレビュー例）\n" +
-          "これは遷移ページのサンプル表示です…\n\n" +
-          "・ノート本文の冒頭数行を ?p= に入れて渡すと、ここにそのまま出ます…\n" +
-          "・長文でも切らずに入るだけ入れます…\n\n" +
-          "例：\n" +
-          "今日のメモ：\n" +
-          "無題のファイル 1 の要点をここに表示…\n" +
-          "次のアクション：リンクをタップしてObsidianへ…";
+      
       }
 
       if (!u) {
