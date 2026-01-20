@@ -9,13 +9,17 @@
   <style>
     :root{
       /* 注意: 多くのブラウザは img に obsidian:// を許可しない */
-      --ICON_URL: "https://sakanakutar.github.io/obsidian-bridge/2023-06-logo.png";
+      --ICON_URL: "https://sakanakutar.github.io/obsidian-bridge/a9a34885821fff8941270ccd6e2ca923c83801b2.png";
 
       /* カード背景（任意）: 例) "https://example.com/bg.jpg" */
-      --CARD_BG_URL: url("https://sakanakutar.github.io/obsidian-bridge/ダウンロード.jpg");
+      --CARD_BG_URL: url("https://sakanakutar.github.io/obsidian-bridge/");
+      
+        /* ページ背景（body全体） */
+  --PAGE_BG_URL: url("https://sakanakutar.github.io/obsidian-bridge/954f4066-5840-4a38-b480-d152f2c8b756.webp"); /* ←ここを差し替え */
+  --PAGE_BG_OPACITY: 1; /* 0.0〜0.7程度で調整 */
 
-      --bg0:#0b0d12;
-      --bg1:#0f1117;
+      --bg0:#080a10;
+      --bg1:#121826;
 
       --text:#e7e9f2;
       --muted:#a6adbb;
@@ -26,7 +30,7 @@
       --border:rgba(255,255,255,0.10);
       --border2:rgba(255,255,255,0.16);
 
-      --glassA:rgba(21,26,35,0.34);
+      --glassA:rgba();
       --glassB:rgba(17,22,34,0.24);
 
       --shadow: 0 18px 48px rgba(0,0,0,0.55);
@@ -40,17 +44,43 @@
       min-height:100vh;
       color:var(--text);
       background:
-        radial-gradient(1100px 700px at 18% 12%, rgba(167,139,250,0.14), transparent 56%),
-        radial-gradient(900px 600px at 84% 26%, rgba(124,58,237,0.10), transparent 60%),
-        radial-gradient(900px 720px at 50% 110%, rgba(255,255,255,0.035), transparent 58%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
+    radial-gradient(1100px 700px at 18% 12%, rgba(0,0,0,0.8), transparent 56%),
+    radial-gradient(900px 600px at 84% 26%, rgba(0,180,140,0.10), transparent 60%),
+    radial-gradient(900px 720px at 50% 110%, rgba(80,200,255,0.14), transparent 58%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
       font-family: ui-sans-serif, system-ui, -apple-system, "SF Pro Display", "SF Pro Text",
                    "Segoe UI", "Helvetica Neue", Arial, "Noto Sans JP", "Hiragino Sans",
                    "Yu Gothic", "Meiryo", sans-serif;
       line-height:1.55;
+      position: relative;
+  overflow-x: hidden;
     }
 
-    .wrap{
+body::before{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background: var(--PAGE_BG_URL);
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.05) contrast(1.02);
+  opacity: var(--PAGE_BG_OPACITY);
+  z-index: -10;
+  pointer-events: none;
+}
+
+/* 画像と既存グラデの馴染ませ（任意） */
+body::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(1100px 700px at 18% 12%, rgb(27 26 30 / 51%), #00000000 56%), 
+    radial-gradient(900px 600px at 84% 26%, rgba(0, 0, 0, 0.14), #00000000 60%), 
+    linear-gradient(180deg, rgb(15 17 23 / 68%), rgb(43 35 61 / 46%));
+  z-index: -9;
+  pointer-events: none;
+}    .wrap{
       max-width: 920px;
       margin: 0 auto;
       padding: 30px 18px 52px;
@@ -70,7 +100,6 @@
       border-radius: 10px;
       overflow:hidden;
       border: 1px solid rgba(255,255,255,0.14);
-      background: linear-gradient(135deg, rgba(167,139,250,0.95), rgba(124,58,237,0.95));
       box-shadow: 0 10px 22px rgba(124,58,237,0.18);
       flex: 0 0 auto;
       position:relative;
@@ -127,11 +156,16 @@
       content:"";
       position:absolute;
       inset:-2px;
-      background:
-        linear-gradient(180deg, rgba(0,0,0,0.62), rgba(0,0,0,0.52)),
-        radial-gradient(1200px 520px at 20% 10%, rgba(167,139,250,0.14), transparent 60%),
-        radial-gradient(900px 520px at 82% 24%, rgba(124,58,237,0.10), transparent 62%),
-        var(--CARD_BG_URL);
+      backdrop-filter: blur(2px);
+backdrop-filter: brightness(60%);
+backdrop-filter: contrast(40%);
+backdrop-filter: drop-shadow(4px 4px 10px blue);
+backdrop-filter: grayscale(30%);
+backdrop-filter: hue-rotate(120deg);
+backdrop-filter: invert(70%);
+backdrop-filter: opacity(20%);
+backdrop-filter: sepia(90%);
+backdrop-filter: saturate(80%);
       background-size: cover;
       background-position: center;
       transform: scale(1.04);
@@ -148,8 +182,8 @@
         linear-gradient(135deg, rgba(255,255,255,0.10), transparent 42%),
         radial-gradient(700px 380px at 15% 8%, rgba(255,255,255,0.08), transparent 55%),
         radial-gradient(900px 520px at 85% 32%, rgba(255,255,255,0.05), transparent 60%);
-      backdrop-filter: blur(18px) saturate(1.18);
-      -webkit-backdrop-filter: blur(18px) saturate(1.18);
+      backdrop-filter: blur(5px) saturate(1.18);
+      -webkit-backdrop-filter: blur(5px) saturate(1.18);
       opacity:0.92;
       z-index:-2;
       pointer-events:none;
@@ -188,73 +222,103 @@
       flex-wrap:wrap;
     }
 
-    /* ボタン（リキッドガラス寄せ） */
-    .btn{
-      position:relative;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      min-width: 220px;
+/* iOS系リキッドガラス寄せ（ボタン） */
+.btn{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
 
-      color: var(--text);
-      text-decoration:none;
-      font-weight: 780;
-      font-size: 14px;
+  padding: 13px 16px;
+  border-radius: 16px;
+  min-width: 220px;
 
-      border: 1px solid rgba(167,139,250,0.30);
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(16px) saturate(1.25);
-      -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  color: rgba(255,255,255,0.94);
+  text-decoration:none;
+  font-weight: 780;
+  font-size: 14px;
+  letter-spacing: 0.2px;
 
-      box-shadow:
-        0 14px 34px rgba(0,0,0,0.46),
-        inset 0 1px 0 rgba(255,255,255,0.14),
-        inset 0 -1px 0 rgba(0,0,0,0.22);
+  /* ガラス本体 */
+  background:
+  backdrop-filter: blur(1.5px) saturate(1.35);
+  -webkit-backdrop-filter: blur(1.5px) saturate(1.35);
 
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
+  box-shadow:
+    0 22px 60px rgba(0,0,0,0.55),
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    inset 0 -1px 0 rgba(0,0,0,0.32);
 
-      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
-      overflow:hidden;
-    }
-    .btn:before{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      background:
-        radial-gradient(640px 260px at 22% 18%, rgba(167,139,250,0.22), transparent 56%),
-        radial-gradient(560px 260px at 78% 32%, rgba(124,58,237,0.16), transparent 60%),
-        linear-gradient(135deg, rgba(255,255,255,0.12), transparent 44%);
-      opacity:0.78;
-      pointer-events:none;
-    }
-    .btn:hover{
-      transform: translateY(-1px);
-      border-color: rgba(167,139,250,0.50);
-      box-shadow:
-        0 18px 44px rgba(0,0,0,0.52),
-        inset 0 1px 0 rgba(255,255,255,0.16),
-        inset 0 -1px 0 rgba(0,0,0,0.24);
-    }
-    .btn:active{ transform: translateY(0px); }
-    .btn:focus-visible{
-      outline: 3px solid rgba(167,139,250,0.28);
-      outline-offset: 2px;
-    }
+  overflow:hidden;
+  user-select:none;
+  -webkit-tap-highlight-color: transparent;
 
-    .dot{
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 4px rgba(167,139,250,0.12);
-      flex: 0 0 auto;
-      position:relative;
-      z-index:1;
-    }
+  transition:
+    transform .14s ease,
+    box-shadow .14s ease,
+    border-color .14s ease,
+    filter .14s ease;
+}
+
+/* 薄膜の“縁”＋ごく薄い虹色 */
+.btn::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  border-radius: 17px;
+  pointer-events:none;
+}
+
+/* 反射（流れるハイライト） */
+.btn::after{
+  content:"";
+  position:absolute;
+  inset:-40% -30%;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.50), transparent 52%);
+  transform: rotate(18deg) translate3d(-14%, -6%, 0);
+  opacity: 0.22;
+  filter: blur(0.2px);
+  pointer-events:none;
+  transition: transform .35s ease, opacity .35s ease;
+}
+
+/* hover/active */
+.btn:hover{
+  transform: translateY(-1px);
+  border-color: rgba(255,255,255,0.26);
+  box-shadow:
+    0 28px 76px rgba(0,0,0,0.62),
+    inset 0 1px 0 rgba(255,255,255,0.26),
+    inset 0 -1px 0 rgba(0,0,0,0.34);
+  filter: saturate(1.05);
+}
+.btn:hover::after{
+  transform: rotate(18deg) translate3d(6%, 2%, 0);
+  opacity: 0.30;
+}
+.btn:active{
+  transform: translateY(0px);
+}
+
+/* フォーカス */
+.btn:focus-visible{
+  outline: 3px solid rgba(167,139,250,0.30);
+  outline-offset: 2px;
+}
+
+/* ドットも“ガラス内発光”っぽく */
+.dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(167,139,250,0.95);
+  box-shadow:
+    0 0 0 4px rgba(167,139,250,0.12),
+    0 0 18px rgba(167,139,250,0.28);
+}
     .btn span.label{
       position:relative;
       z-index:1;
@@ -436,3 +500,4 @@
   </script>
 </body>
 </html>
+
